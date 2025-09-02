@@ -17,6 +17,7 @@ from utils import (
     TEST_PROJECT_DIRECTORY,
 )
 from unittest import mock
+
 DEFAULT_PARAM_VALUES = {
     "input_default_branch": "main",
     "input_release_branch": "release",

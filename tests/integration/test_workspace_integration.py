@@ -23,7 +23,15 @@ from utils import (
 def current_user(databricks_cli, workspace_config):
     """Get current user information once per session."""
     user_result = subprocess.run(
-        [databricks_cli, "--profile", workspace_config["profile"], "current-user", "me", "--output", "json"],
+        [
+            databricks_cli,
+            "--profile",
+            workspace_config["profile"],
+            "current-user",
+            "me",
+            "--output",
+            "json",
+        ],
         capture_output=True,
         text=True,
         timeout=10,
@@ -55,13 +63,13 @@ def workspace_config():
     """
     profile = os.getenv("DATABRICKS_CONFIG_PROFILE")
     cloud = os.getenv("DATABRICKS_CLOUD")
-    
+
     if not profile or not cloud:
         pytest.skip(
             "Integration tests require DATABRICKS_CONFIG_PROFILE and DATABRICKS_CLOUD environment variables. "
             "Example: DATABRICKS_CONFIG_PROFILE=e2demo-fe-aws DATABRICKS_CLOUD=aws"
         )
-    
+
     config = {
         "profile": profile,
         "cloud": cloud,
@@ -75,105 +83,142 @@ def workspace_config():
 def _cleanup_unity_catalog_model(databricks_cli, workspace_config, project_name):
     """Clean up Unity Catalog models by finding and deleting all matching models."""
     import json
-    
+
     try:
         # First, list all models in the schema to find matches
         list_models_cmd = [
-            databricks_cli, "--profile", workspace_config["profile"],
-            "registered-models", "list", 
-            "--catalog-name", workspace_config['catalog'],
-            "--schema-name", workspace_config['schema']
+            databricks_cli,
+            "--profile",
+            workspace_config["profile"],
+            "registered-models",
+            "list",
+            "--catalog-name",
+            workspace_config["catalog"],
+            "--schema-name",
+            workspace_config["schema"],
         ]
         list_result = subprocess.run(
             list_models_cmd, capture_output=True, text=True, timeout=60
         )
-        
+
         if list_result.returncode != 0:
             print(f"[WARN] Could not list UC models: {list_result.stderr}")
             return
-            
+
         models_data = json.loads(list_result.stdout)
-        
+
         # Find models that match our project name pattern
         matching_models = []
         for model in models_data:
-            model_name = model.get('name', '')
+            model_name = model.get("name", "")
             # Match both patterns: "project-model" and "dev_user_project-model"
-            if project_name in model_name and model_name.endswith('-model'):
+            if project_name in model_name and model_name.endswith("-model"):
                 matching_models.append(model_name)
-        
+
         if not matching_models:
             print(f"[INFO] No UC models found matching project '{project_name}'")
             return
-            
-        print(f"[INFO] Found {len(matching_models)} UC models matching project '{project_name}': {matching_models}")
-        
+
+        print(
+            f"[INFO] Found {len(matching_models)} UC models matching project '{project_name}': {matching_models}"
+        )
+
         # Clean up each matching model
         for model_name in matching_models:
             full_model_name = f"{workspace_config['catalog']}.{workspace_config['schema']}.{model_name}"
             print(f"[INFO] Cleaning up model: {full_model_name}")
-            
+
             # List model versions (returns JSON)
             versions_list_cmd = [
-                databricks_cli, "--profile", workspace_config["profile"],
-                "model-versions", "list", full_model_name
+                databricks_cli,
+                "--profile",
+                workspace_config["profile"],
+                "model-versions",
+                "list",
+                full_model_name,
             ]
             versions_result = subprocess.run(
                 versions_list_cmd, capture_output=True, text=True, timeout=60
             )
-            
+
             # Delete model versions first if they exist
             if versions_result.returncode == 0:
                 try:
                     versions_data = json.loads(versions_result.stdout)
                     if versions_data:
-                        print(f"[INFO] Found {len(versions_data)} versions for {full_model_name}")
+                        print(
+                            f"[INFO] Found {len(versions_data)} versions for {full_model_name}"
+                        )
                         for version_info in versions_data:
-                            version = str(version_info.get('version', ''))
+                            version = str(version_info.get("version", ""))
                             print(f"[INFO] Deleting version {version}...")
-                            
+
                             version_delete_cmd = [
-                                databricks_cli, "--profile", workspace_config["profile"],
-                                "model-versions", "delete", full_model_name, version
+                                databricks_cli,
+                                "--profile",
+                                workspace_config["profile"],
+                                "model-versions",
+                                "delete",
+                                full_model_name,
+                                version,
                             ]
                             version_delete_result = subprocess.run(
-                                version_delete_cmd, capture_output=True, text=True, timeout=30
+                                version_delete_cmd,
+                                capture_output=True,
+                                text=True,
+                                timeout=30,
                             )
-                            
+
                             if version_delete_result.returncode == 0:
-                                print(f"[OK] Deleted version {version} for {model_name}")
+                                print(
+                                    f"[OK] Deleted version {version} for {model_name}"
+                                )
                             else:
-                                print(f"[WARN] Could not delete version {version}: {version_delete_result.stderr}")
+                                print(
+                                    f"[WARN] Could not delete version {version}: {version_delete_result.stderr}"
+                                )
                 except json.JSONDecodeError:
                     print(f"[WARN] Could not parse versions JSON for {full_model_name}")
-            
+
             # Now delete the model itself
             model_drop_cmd = [
-                databricks_cli, "--profile", workspace_config["profile"],
-                "registered-models", "delete", full_model_name
+                databricks_cli,
+                "--profile",
+                workspace_config["profile"],
+                "registered-models",
+                "delete",
+                full_model_name,
             ]
             model_drop_result = subprocess.run(
                 model_drop_cmd, capture_output=True, text=True, timeout=60
             )
-            
+
             if model_drop_result.returncode == 0:
                 print(f"[OK] Dropped UC registered model {full_model_name}")
             else:
                 if "not found" not in model_drop_result.stderr.lower():
-                    print(f"[WARN] Could not drop UC model {full_model_name}: {model_drop_result.stderr}")
-                    
+                    print(
+                        f"[WARN] Could not drop UC model {full_model_name}: {model_drop_result.stderr}"
+                    )
+
     except Exception as e:
         print(f"[WARN] Model cleanup failed: {e}")
 
 
 def _cleanup_unity_catalog_table(databricks_cli, workspace_config, table_name):
     """Clean up Unity Catalog table."""
-    full_table_name = f"{workspace_config['catalog']}.{workspace_config['schema']}.{table_name}"
-    
+    full_table_name = (
+        f"{workspace_config['catalog']}.{workspace_config['schema']}.{table_name}"
+    )
+
     try:
         table_drop_cmd = [
-            databricks_cli, "--profile", workspace_config["profile"],
-            "tables", "delete", full_table_name
+            databricks_cli,
+            "--profile",
+            workspace_config["profile"],
+            "tables",
+            "delete",
+            full_table_name,
         ]
         table_drop_result = subprocess.run(
             table_drop_cmd, capture_output=True, text=True, timeout=60
@@ -181,12 +226,14 @@ def _cleanup_unity_catalog_table(databricks_cli, workspace_config, table_name):
         if table_drop_result.returncode == 0:
             print(f"[OK] Dropped table {full_table_name}")
         # Don't warn if table doesn't exist - it might not have been created
-            
+
     except Exception as e:
         print(f"[WARN] Table cleanup failed: {e}")
 
 
-def _cleanup_workspace_folder(databricks_cli, workspace_config, current_user, project_name):
+def _cleanup_workspace_folder(
+    databricks_cli, workspace_config, current_user, project_name
+):
     """Clean up workspace bundle folder."""
     try:
         folder_cleanup = subprocess.run(
@@ -207,7 +254,7 @@ def _cleanup_workspace_folder(databricks_cli, workspace_config, current_user, pr
             print(f"[OK] Bundle folder cleanup complete for {project_name}")
         else:
             print(f"[WARN] Bundle folder cleanup failed: {folder_cleanup.stderr}")
-            
+
     except Exception as e:
         print(f"[WARN] Workspace folder cleanup failed: {e}")
 
@@ -216,7 +263,16 @@ def _cleanup_bundle_resources(databricks_cli, workspace_config, test_project_pat
     """Clean up deployed bundle resources."""
     try:
         destroy_result = subprocess.run(
-            [databricks_cli, "--profile", workspace_config["profile"], "bundle", "destroy", "--target", "dev", "--auto-approve"],
+            [
+                databricks_cli,
+                "--profile",
+                workspace_config["profile"],
+                "bundle",
+                "destroy",
+                "--target",
+                "dev",
+                "--auto-approve",
+            ],
             cwd=test_project_path,
             capture_output=True,
             text=True,
@@ -228,7 +284,7 @@ def _cleanup_bundle_resources(databricks_cli, workspace_config, test_project_pat
         else:
             print(f"[WARN] Bundle destroy failed: {destroy_result.stderr}")
             return False
-            
+
     except Exception as e:
         print(f"[WARN] Bundle cleanup failed: {e}")
         return False
@@ -285,7 +341,14 @@ def deployed_project_path(
 
         # Check if folder already exists
         check_result = subprocess.run(
-            [databricks_cli, "--profile", workspace_config["profile"], "workspace", "get-status", bundle_path],
+            [
+                databricks_cli,
+                "--profile",
+                workspace_config["profile"],
+                "workspace",
+                "get-status",
+                bundle_path,
+            ],
             capture_output=True,
             text=True,
             timeout=10,
@@ -301,14 +364,14 @@ def deployed_project_path(
     deploy_result = subprocess.run(
         [
             databricks_cli,
-            "--profile", 
+            "--profile",
             workspace_config["profile"],
-            "bundle", 
-            "deploy", 
-            "--target", 
+            "bundle",
+            "deploy",
+            "--target",
             "dev",
-            "--var", 
-            f"catalog_name={workspace_config['catalog']}"
+            "--var",
+            f"catalog_name={workspace_config['catalog']}",
         ],
         cwd=test_project_path,
         capture_output=True,
@@ -323,31 +386,39 @@ def deployed_project_path(
         print(f"Deploy stderr: {deploy_result.stderr}")
         print(f"Deploy return code: {deploy_result.returncode}")
         raise Exception(f"Bundle deployment failed: {deploy_result.stderr}")
-    
+
     # If we see "Deployment complete!", consider it successful regardless of return code
     print(f"<==> Session-wide deployment complete for {test_project_path.name}")
 
-    # Note: Since databricks CLI doesn't have a SQL execution command, we'll pass the delta dataset 
+    # Note: Since databricks CLI doesn't have a SQL execution command, we'll pass the delta dataset
     # path directly to the batch inference job as the input_table_name parameter
 
     yield test_project_path
 
     # Cleanup: destroy deployed resources at end of session (unless SKIP_CLEANUP is set)
     if os.environ.get("SKIP_CLEANUP"):
-        print(f"[SKIP] Cleanup skipped due to SKIP_CLEANUP environment variable for {test_project_path.name}")
+        print(
+            f"[SKIP] Cleanup skipped due to SKIP_CLEANUP environment variable for {test_project_path.name}"
+        )
         return
-    
+
     # Run cleanup in order: bundle resources, UC model, UC tables, workspace folder
-    bundle_destroyed = _cleanup_bundle_resources(databricks_cli, workspace_config, test_project_path)
-    
+    bundle_destroyed = _cleanup_bundle_resources(
+        databricks_cli, workspace_config, test_project_path
+    )
+
     if bundle_destroyed:
         # Additional Unity Catalog cleanup
-        _cleanup_unity_catalog_model(databricks_cli, workspace_config, test_project_path.name)
+        _cleanup_unity_catalog_model(
+            databricks_cli, workspace_config, test_project_path.name
+        )
         _cleanup_unity_catalog_table(databricks_cli, workspace_config, "predictions")
-        
+
         # Workspace folder cleanup for integration test folders
         if test_project_path.name.startswith("integration_test_"):
-            _cleanup_workspace_folder(databricks_cli, workspace_config, current_user, test_project_path.name)
+            _cleanup_workspace_folder(
+                databricks_cli, workspace_config, current_user, test_project_path.name
+            )
 
 
 @pytest.fixture(scope="session")
@@ -355,7 +426,15 @@ def bundle_validation_data(test_project_path, databricks_cli, workspace_config):
     """Get bundle validation data once for all validation tests."""
     # Run validation with JSON output
     result = subprocess.run(
-        [databricks_cli, "--profile", workspace_config["profile"], "bundle", "validate", "--output", "json"],
+        [
+            databricks_cli,
+            "--profile",
+            workspace_config["profile"],
+            "bundle",
+            "validate",
+            "--output",
+            "json",
+        ],
         cwd=test_project_path,
         capture_output=True,
         text=True,
@@ -449,7 +528,7 @@ def test_bundle_experiments_configuration(bundle_validation_data):
 def test_bundle_models_configuration(bundle_validation_data):
     """Test models are properly configured."""
     resources = bundle_validation_data["resources"]
-    
+
     # With Unity Catalog enabled, models are under 'registered_models'
     if "registered_models" in resources:
         models = resources["registered_models"]
@@ -459,7 +538,7 @@ def test_bundle_models_configuration(bundle_validation_data):
         assert "models" in resources, "Should have models or registered_models resource"
         models = resources["models"]
         model_type = "models"
-    
+
     assert len(models) > 0, "Should define at least one model"
 
     for model_name, model_config in models.items():
@@ -544,7 +623,15 @@ def test_bundle_deployment_to_dev_environment(
 
     # Quick verification that resources have URLs (indicates successful deployment)
     summary_result = subprocess.run(
-        [databricks_cli, "--profile", workspace_config["profile"], "bundle", "summary", "--output", "json"],
+        [
+            databricks_cli,
+            "--profile",
+            workspace_config["profile"],
+            "bundle",
+            "summary",
+            "--output",
+            "json",
+        ],
         cwd=deployed_project_path,
         capture_output=True,
         text=True,
@@ -585,7 +672,15 @@ def test_bundle_resource_creation(
 
     # Get bundle summary to check created resources (deployment handled by fixture)
     summary_result = subprocess.run(
-        [databricks_cli, "--profile", workspace_config["profile"], "bundle", "summary", "--output", "json"],
+        [
+            databricks_cli,
+            "--profile",
+            workspace_config["profile"],
+            "bundle",
+            "summary",
+            "--output",
+            "json",
+        ],
         cwd=deployed_project_path,
         capture_output=True,
         text=True,
@@ -612,7 +707,7 @@ def test_bundle_resource_creation(
         ), f"Experiment should be in user workspace: {exp_path}"
         print(f"[OK] Created experiment: {exp_info['name']}")
 
-    # Verify models were registered with correct structure  
+    # Verify models were registered with correct structure
     # With Unity Catalog, models are under 'registered_models'
     models = resources.get("registered_models", resources.get("models", {}))
     assert len(models) > 0, "Should have created at least one model"
@@ -635,7 +730,7 @@ def test_bundle_run_job_execution(
 
     # Run only specific workflows in sequence: 1) training, 2) batch inference
     workflows_to_run = ["model_training_job", "batch_inference_job"]
-    
+
     print(f"<==> Will run {len(workflows_to_run)} jobs in sequence: {workflows_to_run}")
 
     # Test bundle run for each workflow in sequence
@@ -652,16 +747,18 @@ def test_bundle_run_job_execution(
             "--target",
             "dev",
             "--var",
-            f"catalog_name={workspace_config['catalog']}"
+            f"catalog_name={workspace_config['catalog']}",
         ]
-        
+
         if resource_name == "batch_inference_job":
             # Use notebook-params to override input_table_name
-            run_cmd.extend([
-                "--notebook-params", 
-                "input_table_name=delta.`/databricks-datasets/nyctaxi-with-zipcodes/subsampled`"
-            ])
-        
+            run_cmd.extend(
+                [
+                    "--notebook-params",
+                    "input_table_name=delta.`/databricks-datasets/nyctaxi-with-zipcodes/subsampled`",
+                ]
+            )
+
         run_result = subprocess.run(
             run_cmd,
             cwd=deployed_project_path,
@@ -673,34 +770,49 @@ def test_bundle_run_job_execution(
         # Check if job was submitted successfully (Run URL present)
         if "Run URL:" in run_result.stderr:
             print(f"[OK] Bundle run submitted for {resource_name}")
-            
+
             # If job completed successfully (return code 0), that's great
             if run_result.returncode == 0:
                 print(f"[OK] Bundle run completed successfully for {resource_name}")
                 successful_runs += 1
             # If job was submitted but CLI timed out (common network issue), still count as success
-            elif ("unexpected EOF" in run_result.stderr or 
-                  "timeout" in run_result.stderr.lower() or 
-                  "read tcp" in run_result.stderr or
-                  "request timed out" in run_result.stderr):
-                print(f"[OK] Bundle run submitted for {resource_name} (CLI timeout during polling, job likely completed)")
+            elif (
+                "unexpected EOF" in run_result.stderr
+                or "timeout" in run_result.stderr.lower()
+                or "read tcp" in run_result.stderr
+                or "request timed out" in run_result.stderr
+            ):
+                print(
+                    f"[OK] Bundle run submitted for {resource_name} (CLI timeout during polling, job likely completed)"
+                )
                 successful_runs += 1
             else:
-                print(f"[WARN] Bundle run submitted but failed for {resource_name}: {run_result.stderr}")
-                # Fail fast - if training job fails, don't run subsequent jobs  
-                assert False, f"Job {resource_name} failed after submission: {run_result.stderr}"
+                print(
+                    f"[WARN] Bundle run submitted but failed for {resource_name}: {run_result.stderr}"
+                )
+                # Fail fast - if training job fails, don't run subsequent jobs
+                assert (
+                    False
+                ), f"Job {resource_name} failed after submission: {run_result.stderr}"
         else:
             # Check if it's a network connectivity issue
-            if ("no such host" in run_result.stderr or 
-                "dial tcp" in run_result.stderr):
-                print(f"[WARN] Bundle run failed due to network connectivity for {resource_name}: {run_result.stderr}")
+            if "no such host" in run_result.stderr or "dial tcp" in run_result.stderr:
+                print(
+                    f"[WARN] Bundle run failed due to network connectivity for {resource_name}: {run_result.stderr}"
+                )
                 # Don't fail the test for network issues - workspace might be temporarily unreachable
-                print(f"[SKIP] Skipping {resource_name} due to network connectivity issues")
+                print(
+                    f"[SKIP] Skipping {resource_name} due to network connectivity issues"
+                )
                 continue
             else:
-                print(f"[ERROR] Bundle run failed to submit for {resource_name}: {run_result.stderr}")
+                print(
+                    f"[ERROR] Bundle run failed to submit for {resource_name}: {run_result.stderr}"
+                )
                 # Fail fast - if job fails to submit, don't run subsequent jobs
-                assert False, f"Job {resource_name} failed to submit: {run_result.stderr}"
+                assert (
+                    False
+                ), f"Job {resource_name} failed to submit: {run_result.stderr}"
 
     assert (
         successful_runs > 0
@@ -719,7 +831,13 @@ def test_workspace_permissions_and_access(
 
     # Check that we can access the deployed experiment
     experiments_result = subprocess.run(
-        [databricks_cli, "--profile", workspace_config["profile"], "experiments", "list"],
+        [
+            databricks_cli,
+            "--profile",
+            workspace_config["profile"],
+            "experiments",
+            "list",
+        ],
         capture_output=True,
         text=True,
     )

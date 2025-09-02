@@ -77,19 +77,24 @@ def parametrize_by_project_generation_params(fn):
             ("CICD_and_Project", "no", "yes", "no"),
             ("CICD_and_Project", "yes", "no", "no"),
             ("CICD_and_Project", "yes", "no", "yes"),
-            ("CICD_and_Project", "yes", "yes", "no"),  # New: feature store + mlflow recipes
-            ("CICD_and_Project", "yes", "yes", "yes"), # New: all features enabled
-            # Project_Only combinations - all possible feature combinations  
+            (
+                "CICD_and_Project",
+                "yes",
+                "yes",
+                "no",
+            ),  # New: feature store + mlflow recipes
+            ("CICD_and_Project", "yes", "yes", "yes"),  # New: all features enabled
+            # Project_Only combinations - all possible feature combinations
             ("Project_Only", "no", "no", "no"),
             ("Project_Only", "no", "no", "yes"),
             ("Project_Only", "no", "yes", "no"),
             ("Project_Only", "yes", "no", "no"),
             ("Project_Only", "yes", "no", "yes"),
-            ("Project_Only", "yes", "yes", "no"),     # New: feature store + mlflow recipes
-            ("Project_Only", "yes", "yes", "yes"),    # New: all features enabled
+            ("Project_Only", "yes", "yes", "no"),  # New: feature store + mlflow recipes
+            ("Project_Only", "yes", "yes", "yes"),  # New: all features enabled
             # CICD_Only combinations - expanded to include Unity Catalog variations
             ("CICD_Only", "no", "no", "no"),
-            ("CICD_Only", "no", "no", "yes"),         # New: CICD_Only with Unity Catalog
+            ("CICD_Only", "no", "no", "yes"),  # New: CICD_Only with Unity Catalog
         ],
     )
     @wraps(fn)
@@ -173,8 +178,9 @@ def generate(directory, databricks_cli, context):
     # Convert string path to Path object if needed
     if isinstance(directory, str):
         from pathlib import Path
+
         directory = Path(directory)
-        
+
     if context.get("input_cloud") == "aws":
         default_params = AWS_DEFAULT_PARAMS
     elif context.get("input_cloud") == "gcp":

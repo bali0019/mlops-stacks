@@ -19,7 +19,15 @@ from mlflow.recipes import Recipe
     ],
 )
 @parametrize_by_project_generation_params
-def test_mlp_yaml_valid(generated_project_dir, profile, include_mlflow_recipes, cloud, include_models_in_unity_catalog, setup_cicd_and_project, include_feature_store):
+def test_mlp_yaml_valid(
+    generated_project_dir,
+    profile,
+    include_mlflow_recipes,
+    cloud,
+    include_models_in_unity_catalog,
+    setup_cicd_and_project,
+    include_feature_store,
+):
     # There's no MLP YAML configs generated so skip test in that case.
     if include_mlflow_recipes == "no":
         return
