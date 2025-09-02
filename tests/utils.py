@@ -162,9 +162,13 @@ def markdown_checker_configs(tmpdir):
             {"pattern": "../../README.md#Setting%20up%20CI/CD"},
             {"pattern": "../../docs/mlops-setup.md"},
             {"pattern": "#configure-cicd---gitlab"},
-            {"pattern": "https://hub.docker.com/repository/docker/databricksfieldeng/mlopsstack/general"},
+            {
+                "pattern": "https://hub.docker.com/repository/docker/databricksfieldeng/mlopsstack/general"
+            },
             {"pattern": "https://mlflow.org/docs/latest/recipes.html*"},
-            {"pattern": "https://mlflow.org/docs/latest/python_api/mlflow.recipes.html*"},
+            {
+                "pattern": "https://mlflow.org/docs/latest/python_api/mlflow.recipes.html*"
+            },
         ],
         "httpHeaders": [
             {
