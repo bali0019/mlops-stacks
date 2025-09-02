@@ -35,19 +35,7 @@ jobs:
           tar -czvf cicd.tar.gz cicd
           rm -rf cicd/template/.github cicd/template/.azure
           cd ../..
-      - name: Debug markdown-link-check installation
-        run: |
-          echo "=== Checking markdown-link-check installation ==="
-          which markdown-link-check
-          markdown-link-check --version
-          npm list -g | grep markdown-link-check || echo "Not found in npm list"
-      - name: Run ONLY specific markdown links test (TEMPORARY DEBUG)
-        run: |
-          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          # Running only the failing test for quick debugging
-          pytest 'tests/test_create_project.py::test_markdown_links[CICD_Only-no-no-no-gitlab-azure]' -vvv --tb=long -s
-      - name: SKIP - Run all tests (temporarily disabled for debugging)
-        if: false
+      - name: Run tests with pytest
         run: |
           export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           pytest tests --large -vv --black
