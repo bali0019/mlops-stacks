@@ -61,7 +61,7 @@ jobs:
 
       - name: Install Node.js dependencies
         run: |
-          npm install -g markdown-link-check@3.10.3
+          npm install -g markdown-link-check@3.12.2
 
       - name: Install Databricks CLI
         run: |
