@@ -26,6 +26,11 @@ jobs:
             pip install -r dev-requirements.txt
       - name: Install Node.js dependencies
         run: |
+            # First uninstall any existing version
+            npm uninstall -g markdown-link-check || true
+            # Clear npm cache
+            npm cache clean --force
+            # Install the newer version
             npm install -g markdown-link-check@3.12.2
       - name: Generate CICD Zip
         run: |

@@ -134,7 +134,8 @@ def test_markdown_links(cloud, include_models_in_unity_catalog, generated_projec
     markdown_checker_configs(generated_project_dir)
     subprocess.run(
         """
-        npm install -g markdown-link-check@3.12.2
+        # Check if markdown-link-check is already installed, if not install it
+        which markdown-link-check || npm install -g markdown-link-check@3.12.2
         find . -name \\*.md -print0 | xargs -0 -n1 markdown-link-check -c ./checker-config.json
         """,
         shell=True,
