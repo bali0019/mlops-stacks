@@ -9,6 +9,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
       - name: Install act
         run: |
           # Install act
@@ -21,6 +24,9 @@ jobs:
         run: |
             python -m pip install --upgrade pip
             pip install -r dev-requirements.txt
+      - name: Install Node.js dependencies
+        run: |
+            npm install -g markdown-link-check@3.10.3
       - name: Generate CICD Zip
         run: |
           cd template/{{.input_root_dir}}
