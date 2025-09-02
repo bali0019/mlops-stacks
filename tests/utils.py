@@ -159,6 +159,12 @@ def markdown_checker_configs(tmpdir):
             {"pattern": "http://127.0.0.1:5000"},
             {"pattern": "https://adb-3214.67.azuredatabricks.net*"},
             {"pattern": "https://adb-345.89.azuredatabricks.net*"},
+            {"pattern": "../../README.md#Setting%20up%20CI/CD"},
+            {"pattern": "../../docs/mlops-setup.md"},
+            {"pattern": "#configure-cicd---gitlab"},
+            {"pattern": "https://hub.docker.com/repository/docker/databricksfieldeng/mlopsstack/general"},
+            {"pattern": "https://mlflow.org/docs/latest/recipes.html*"},
+            {"pattern": "https://mlflow.org/docs/latest/python_api/mlflow.recipes.html*"},
         ],
         "httpHeaders": [
             {
