@@ -18,9 +18,7 @@ on:
 
 jobs:
   integration-tests:
-    runs-on: 
-      group: databricks-field-eng-protected-runner-group
-      labels: [linux-ubuntu-latest]
+    runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false  # Don't cancel Azure if AWS fails
@@ -132,9 +130,7 @@ jobs:
           retention-days: 7
 
   notify-failure:
-    runs-on: 
-      group: databricks-field-eng-protected-runner-group
-      labels: [linux-ubuntu-latest]
+    runs-on: ubuntu-latest
     needs: integration-tests
     if: failure() && github.event_name == 'schedule'
     steps:
@@ -166,9 +162,7 @@ jobs:
 
   # Create a check run that shows the overall status
   integration-status:
-    runs-on: 
-      group: databricks-field-eng-protected-runner-group
-      labels: [linux-ubuntu-latest]
+    runs-on: ubuntu-latest
     needs: integration-tests
     if: always()
     steps:

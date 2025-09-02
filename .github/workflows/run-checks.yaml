@@ -3,9 +3,7 @@ on:
   pull_request:
 jobs:
   run-tests:
-    runs-on: 
-      group: databricks-field-eng-protected-runner-group
-      labels: [linux-ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
