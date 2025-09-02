@@ -1,4 +1,4 @@
-name: Debug Markdown Links Test
+name: Debug Markdown Links Test - v2
 on:
   workflow_dispatch:
     inputs:

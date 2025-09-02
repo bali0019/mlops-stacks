@@ -1,0 +1,64 @@
+🚀 Starting concurrent integration tests...
+AWS Profile: e2demo-aws
+Azure Profile: e2demo-azure
+
+🏃‍♂️ Running tests in parallel...
+===============================================
+[AWS] 🔧 Starting AWS integration tests...
+[AZURE] 🔧 Starting Azure integration tests...
+[AZURE] ============================= test session starts ==============================
+[AZURE] platform darwin -- Python 3.12.10, pytest-7.4.4, pluggy-1.6.0 -- /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks/test-env/bin/python
+[AZURE] cachedir: .pytest_cache
+[AZURE] rootdir: /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks
+[AZURE] plugins: black-0.6.0
+[AZURE] collecting ... collected 14 items
+[AZURE] 
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_basic_validation PASSED [  7%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_configuration PASSED [ 14%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_workspace_configuration PASSED [ 21%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_jobs_configuration PASSED [ 28%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_experiments_configuration PASSED [ 35%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_models_configuration PASSED [ 42%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_variables_configuration PASSED [ 50%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_includes_configuration PASSED [ 57%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_presets_configuration PASSED [ 64%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_sync_configuration PASSED [ 71%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_deployment_to_dev_environment PASSED [ 78%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_resource_creation PASSED [ 85%]
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_run_job_execution PASSED [ 92%]
+[AZURE] tests/integration/test_workspace_integration.py::test_workspace_permissions_and_access PASSED [100%]
+[AZURE] 
+[AZURE] ======================= 14 passed in 1406.26s (0:23:26) ========================
+[AZURE] ✅ Azure integration tests completed successfully!
+[AWS] ============================= test session starts ==============================
+[AWS] platform darwin -- Python 3.12.10, pytest-7.4.4, pluggy-1.6.0 -- /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks/test-env/bin/python
+[AWS] cachedir: .pytest_cache
+[AWS] rootdir: /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks
+[AWS] plugins: black-0.6.0
+[AWS] collecting ... collected 14 items
+[AWS] 
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_basic_validation PASSED [  7%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_configuration PASSED [ 14%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_workspace_configuration PASSED [ 21%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_jobs_configuration PASSED [ 28%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_experiments_configuration PASSED [ 35%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_models_configuration PASSED [ 42%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_variables_configuration PASSED [ 50%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_includes_configuration PASSED [ 57%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_presets_configuration PASSED [ 64%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_sync_configuration PASSED [ 71%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_deployment_to_dev_environment PASSED [ 78%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_resource_creation PASSED [ 85%]
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_run_job_execution PASSED [ 92%]
+[AWS] tests/integration/test_workspace_integration.py::test_workspace_permissions_and_access PASSED [100%]
+[AWS] 
+[AWS] ======================= 14 passed in 1529.00s (0:25:28) ========================
+[AWS] ✅ AWS integration tests completed successfully!
+
+===============================================
+📊 FINAL RESULTS:
+===============================================
+AWS Tests: ✅ PASSED
+Azure Tests: ✅ PASSED
+
+🎉 ALL TESTS PASSED! Both AWS and Azure integration tests successful!

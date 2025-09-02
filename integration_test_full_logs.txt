@@ -1,0 +1,136 @@
+🚀 Starting concurrent integration tests...
+AWS Profile: e2demo-aws
+Azure Profile: e2demo-azure
+
+🏃‍♂️ Running tests in parallel...
+===============================================
+[AWS] 🔧 Starting AWS integration tests...
+[AZURE] 🔧 Starting Azure integration tests...
+[AZURE] ============================= test session starts ==============================
+[AZURE] platform darwin -- Python 3.12.10, pytest-7.4.4, pluggy-1.6.0 -- /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks/test-env/bin/python
+[AZURE] cachedir: .pytest_cache
+[AZURE] rootdir: /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks
+[AZURE] plugins: black-0.6.0
+[AZURE] collecting ... collected 14 items
+[AZURE] 
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_basic_validation Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md.
+[AZURE] 
+[AZURE] *** Your MLOps Stack has been created in the 'integration_test_1756748428/integration_test_1756748428' directory! ***
+[AZURE] 
+[AZURE] Please refer to the README.md for further instructions on getting started.
+[AZURE] <==> Bundle validation successful - basic structure verified
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_configuration <==> Bundle configuration verified for integration_test_1756748428
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_workspace_configuration <==> Workspace configuration verified - root path: /Workspace/Users/jas.bali@databricks.com/.bundle/integration_test_1756748428/dev
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_jobs_configuration <==> Jobs configuration verified - found 2 jobs: ['batch_inference_job', 'model_training_job']
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_experiments_configuration <==> Experiments configuration verified - found 1 experiments
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_models_configuration <==> Models configuration verified - found 1 registered_models
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_variables_configuration <==> Variables configuration verified - found 3 variables: ['catalog_name', 'experiment_name', 'model_name']
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_includes_configuration <==> Includes configuration verified - found 3 includes
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_presets_configuration <==> Presets configuration verified - name prefix: [dev jas_bali] 
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_sync_configuration <==> Sync configuration verified - found 1 sync paths
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_deployment_to_dev_environment [WARN] Bundle folder already exists: /Users/jas.bali@databricks.com/.bundle/integration_test_1756748428
+[AZURE] <==> Session-wide deployment complete for integration_test_1756748428
+[AZURE] [INFO] Found 3 deployed resources: ['jobs.batch_inference_job', 'jobs.model_training_job', 'experiments.experiment']
+[AZURE] <==> Successfully deployed 3 resources to workspace
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_resource_creation [OK] Created experiment: /Users/jas.bali@databricks.com/[dev jas_bali] dev-integration_test_1756748428-experiment
+[AZURE] [OK] Created model: dev_jas_bali_integration_test_1756748428-model
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_bundle_run_job_execution <==> Will run 2 jobs in sequence: ['model_training_job', 'batch_inference_job']
+[AZURE] [OK] Bundle run submitted for model_training_job
+[AZURE] [OK] Bundle run completed successfully for model_training_job
+[AZURE] [OK] Bundle run submitted for batch_inference_job
+[AZURE] [OK] Bundle run completed successfully for batch_inference_job
+[AZURE] <==> Successfully executed 2/2 jobs via bundle run
+[AZURE] PASSED
+[AZURE] tests/integration/test_workspace_integration.py::test_workspace_permissions_and_access PASSED[OK] Bundle resources destroyed for integration_test_1756748428
+[AZURE] [INFO] Found 1 UC models matching project 'integration_test_1756748428': ['integration_test_1756748428-model']
+[AZURE] [INFO] Cleaning up model: jas_bali_btw6_da.test.integration_test_1756748428-model
+[AZURE] [INFO] Found 1 versions for jas_bali_btw6_da.test.integration_test_1756748428-model
+[AZURE] [INFO] Deleting version 1...
+[AZURE] [OK] Deleted version 1 for integration_test_1756748428-model
+[AZURE] [OK] Dropped UC registered model jas_bali_btw6_da.test.integration_test_1756748428-model
+[AZURE] [OK] Dropped table jas_bali_btw6_da.test.predictions
+[AZURE] [OK] Bundle folder cleanup complete for integration_test_1756748428
+[AZURE] 
+[AZURE] 
+[AZURE] ======================= 14 passed in 1433.20s (0:23:53) ========================
+[AZURE] ✅ Azure integration tests completed successfully!
+[AWS] ============================= test session starts ==============================
+[AWS] platform darwin -- Python 3.12.10, pytest-7.4.4, pluggy-1.6.0 -- /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks/test-env/bin/python
+[AWS] cachedir: .pytest_cache
+[AWS] rootdir: /Users/jas.bali/PycharmProjects/claude-code/mlops-stacks
+[AWS] plugins: black-0.6.0
+[AWS] collecting ... collected 14 items
+[AWS] 
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_basic_validation Welcome to MLOps Stacks. For detailed information on project generation, see the README at https://github.com/databricks/mlops-stacks/blob/main/README.md.
+[AWS] 
+[AWS] *** Your MLOps Stack has been created in the 'integration_test_1756748428/integration_test_1756748428' directory! ***
+[AWS] 
+[AWS] Please refer to the README.md for further instructions on getting started.
+[AWS] <==> Bundle validation successful - basic structure verified
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_configuration <==> Bundle configuration verified for integration_test_1756748428
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_workspace_configuration <==> Workspace configuration verified - root path: /Workspace/Users/jas.bali@databricks.com/.bundle/integration_test_1756748428/dev
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_jobs_configuration <==> Jobs configuration verified - found 2 jobs: ['batch_inference_job', 'model_training_job']
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_experiments_configuration <==> Experiments configuration verified - found 1 experiments
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_models_configuration <==> Models configuration verified - found 1 registered_models
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_variables_configuration <==> Variables configuration verified - found 3 variables: ['catalog_name', 'experiment_name', 'model_name']
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_includes_configuration <==> Includes configuration verified - found 3 includes
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_presets_configuration <==> Presets configuration verified - name prefix: [dev jas_bali] 
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_sync_configuration <==> Sync configuration verified - found 1 sync paths
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_deployment_to_dev_environment [WARN] Bundle folder already exists: /Users/jas.bali@databricks.com/.bundle/integration_test_1756748428
+[AWS] <==> Session-wide deployment complete for integration_test_1756748428
+[AWS] [INFO] Found 3 deployed resources: ['jobs.batch_inference_job', 'jobs.model_training_job', 'experiments.experiment']
+[AWS] <==> Successfully deployed 3 resources to workspace
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_resource_creation [OK] Created experiment: /Users/jas.bali@databricks.com/[dev jas_bali] dev-integration_test_1756748428-experiment
+[AWS] [OK] Created model: dev_jas_bali_integration_test_1756748428-model
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_bundle_run_job_execution <==> Will run 2 jobs in sequence: ['model_training_job', 'batch_inference_job']
+[AWS] [OK] Bundle run submitted for model_training_job
+[AWS] [OK] Bundle run completed successfully for model_training_job
+[AWS] [OK] Bundle run submitted for batch_inference_job
+[AWS] [OK] Bundle run completed successfully for batch_inference_job
+[AWS] <==> Successfully executed 2/2 jobs via bundle run
+[AWS] PASSED
+[AWS] tests/integration/test_workspace_integration.py::test_workspace_permissions_and_access PASSED[OK] Bundle resources destroyed for integration_test_1756748428
+[AWS] [INFO] Found 1 UC models matching project 'integration_test_1756748428': ['integration_test_1756748428-model']
+[AWS] [INFO] Cleaning up model: jas_test_mlops.test.integration_test_1756748428-model
+[AWS] [INFO] Found 1 versions for jas_test_mlops.test.integration_test_1756748428-model
+[AWS] [INFO] Deleting version 1...
+[AWS] [OK] Deleted version 1 for integration_test_1756748428-model
+[AWS] [OK] Dropped UC registered model jas_test_mlops.test.integration_test_1756748428-model
+[AWS] [OK] Dropped table jas_test_mlops.test.predictions
+[AWS] [OK] Bundle folder cleanup complete for integration_test_1756748428
+[AWS] 
+[AWS] 
+[AWS] ======================= 14 passed in 1566.78s (0:26:06) ========================
+[AWS] ✅ AWS integration tests completed successfully!
+
+===============================================
+📊 FINAL RESULTS:
+===============================================
+AWS Tests: ✅ PASSED
+Azure Tests: ✅ PASSED
+
+🎉 ALL TESTS PASSED! Both AWS and Azure integration tests successful!
