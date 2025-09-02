@@ -33,8 +33,8 @@ jobs:
             host_var: DATABRICKS_HOST_AZURE
             token_var: DATABRICKS_TOKEN_AZURE
     
-    # Skip matrix entry based on manual input
-    if: ${{ github.event_name == 'schedule' || github.event.inputs.cloud == 'both' || github.event.inputs.cloud == matrix.cloud }}
+    # Skip matrix entry based on manual input  
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'push' || github.event.inputs.cloud == '' || github.event.inputs.cloud == 'both' || (github.event.inputs.cloud == 'aws' && matrix.cloud == 'aws') || (github.event.inputs.cloud == 'azure' && matrix.cloud == 'azure') }}
     
     name: Integration Tests (${{ matrix.cloud }})
     
